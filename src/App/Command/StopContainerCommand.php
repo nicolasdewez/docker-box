@@ -2,7 +2,9 @@
 
 namespace App\Command;
 
+use App\Exception\InvalidArgumentException;
 use Ndewez\ApplicationConsoleBundle\Command\ContainerCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -18,6 +20,7 @@ class StopContainerCommand extends ContainerCommand
     {
         $this->setName('container:stop')
             ->setDescription('Stop a container')
+            ->addArgument('name', InputArgument::REQUIRED, 'Name of container')
         ;
     }
 
@@ -26,5 +29,14 @@ class StopContainerCommand extends ContainerCommand
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        if (!$this->container->get('app.configuration')->exists($input->getArgument('name'))) {
+            throw new InvalidArgumentException('This container doesn\'t exists', $this->getName());
+        }
+
+        if ($this->container->get('app.container')->stop($input->getArgument('name'))) {
+            $output->writeln('<info>Container stopped</info>');
+        } else {
+            $output->writeln('<error>A problem is occured</error>');
+        }
     }
 }
