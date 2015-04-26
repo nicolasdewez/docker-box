@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Service\Interactive;
+use Ndewez\ApplicationConsoleBundle\Command\ContainerCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
