@@ -3,24 +3,26 @@
 namespace App\Command;
 
 use App\Exception\InvalidArgumentException;
+use App\Service\Inspection;
 use Ndewez\ApplicationConsoleBundle\Command\ContainerCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class StatusContainerCommand.
+ * Class InspectContainerCommand.
  */
-class StatusContainerCommand extends ContainerCommand
+class InspectContainerCommand extends ContainerCommand
 {
     /**
      * {@inheritdoc}
      */
     public function configure()
     {
-        $this->setName('container:status')
-            ->setDescription('Status of container')
+        $this->setName('container:inspect')
+            ->setDescription('Inspect a container')
             ->addArgument('name', InputArgument::REQUIRED, 'Name of container')
+            ->addArgument('field', InputArgument::OPTIONAL, 'Field to inspect', Inspection::ALL)
         ;
     }
 
@@ -34,9 +36,8 @@ class StatusContainerCommand extends ContainerCommand
             throw new InvalidArgumentException('This container doesn\'t exists', $this->getName());
         }
 
-        $status = $this->container->get('app.container')->status($name);
-        $display = sprintf('<info>Container %s is %s</info>', $name, $status);
-
-        $output->writeln($display);
+        $inspect = $this->container->get('app.container')->inspect($name, $input->getArgument('field'));
+        $table = $this->container->get('app.interactive')->commandInspectTable($output, $inspect);
+        $table->render();
     }
 }

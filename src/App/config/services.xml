@@ -7,6 +7,10 @@
 
         <service id="app.container" class="App\Service\Container">
             <argument type="service" id="app.configuration" />
+            <argument type="service">
+                <service class="App\Service\Inspection">
+                </service>
+            </argument>
         </service>
 
         <service id="app.interactive" class="App\Service\Interactive">

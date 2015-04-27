@@ -13,9 +13,6 @@ class Container
     /** @var string */
     protected $command;
 
-    /** @var bool */
-    protected $multiple;
-
     /**
      * @return string
      */
@@ -46,22 +43,6 @@ class Container
     public function setCommand($command)
     {
         $this->command = $command;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isMultiple()
-    {
-        return $this->multiple;
-    }
-
-    /**
-     * @param bool $multiple
-     */
-    public function setMultiple($multiple)
-    {
-        $this->multiple = $multiple;
     }
 
     /**

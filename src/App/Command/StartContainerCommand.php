@@ -11,15 +11,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class LaunchContainerCommand.
  */
-class LaunchContainerCommand extends ContainerCommand
+class StartContainerCommand extends ContainerCommand
 {
     /**
      * {@inheritdoc}
      */
     public function configure()
     {
-        $this->setName('container:launch')
-            ->setDescription('Launch a container')
+        $this->setName('container:start')
+            ->setDescription('Start a container')
             ->addArgument('name', InputArgument::REQUIRED, 'Name of container')
         ;
     }
@@ -33,10 +33,8 @@ class LaunchContainerCommand extends ContainerCommand
             throw new InvalidArgumentException('This container doesn\'t exists', $this->getName());
         }
 
-        // TODO : see multiple
-
         if ($this->container->get('app.container')->start($input->getArgument('name'))) {
-            $output->writeln('<info>Container launched</info>');
+            $output->writeln('<info>Container started</info>');
         } else {
             $output->writeln('<error>A problem is occured</error>');
         }
