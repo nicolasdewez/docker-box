@@ -70,7 +70,7 @@ class Configuration
     public function lists($index = true)
     {
         $finder = new Finder();
-        $configurations = $finder->files()->in($this->pathFile);
+        $configurations = $finder->files()->in($this->pathFile)->sortByName();
 
         $containers = [];
         foreach ($configurations as $configuration) {

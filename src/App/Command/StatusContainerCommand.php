@@ -13,6 +13,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class StatusContainerCommand extends ContainerCommand
 {
+    const ALL = '[all]';
+
     /**
      * {@inheritdoc}
      */
@@ -20,7 +22,7 @@ class StatusContainerCommand extends ContainerCommand
     {
         $this->setName('container:status')
             ->setDescription('Status of container')
-            ->addArgument('name', InputArgument::REQUIRED, 'Name of container')
+            ->addArgument('name', InputArgument::OPTIONAL, 'Name of container', self::ALL)
         ;
     }
 
@@ -30,13 +32,23 @@ class StatusContainerCommand extends ContainerCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('name');
-        if (!$this->container->get('app.configuration')->exists($name)) {
-            throw new InvalidArgumentException('This container doesn\'t exists', $this->getName());
+        $configuration = $this->container->get('app.configuration');
+        $containerSrv = $this->container->get('app.container');
+
+        $containers = $configuration->lists();
+        if (self::ALL !== $name) {
+            if (!$configuration->exists($name)) {
+                throw new InvalidArgumentException('This container doesn\'t exists', $this->getName());
+            }
+
+            $containers = [$name => $configuration->load($name)];
         }
 
-        $status = $this->container->get('app.container')->status($name);
-        $display = sprintf('<info>Container %s is %s</info>', $name, $status);
+        foreach ($containers as $container) {
+            $status = $containerSrv->status($container->getName());
 
-        $output->writeln($display);
+            $display = sprintf('<info>Container %s is %s</info>', $container->getName(), $status);
+            $output->writeln($display);
+        }
     }
 }

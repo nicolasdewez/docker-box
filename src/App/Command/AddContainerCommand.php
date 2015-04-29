@@ -38,11 +38,15 @@ class AddContainerCommand extends ContainerCommand
         $interactive = $this->container->get('app.interactive');
         $helper = $this->getHelper('question');
 
+        $question = $interactive->commandAddQuestionInteractive();
+        $mode = $helper->ask($input, $output, $question);
+
         $question = $interactive->commandAddQuestionCommand();
         $command = $helper->ask($input, $output, $question);
 
         $container = new Container();
         $container->setName($input->getArgument('name'));
+        $container->setInteractive($mode);
         $container->setCommand($command);
 
         $configuration->save($container);

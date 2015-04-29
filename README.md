@@ -83,5 +83,7 @@ Field can be :
 
 # TODO
 
-- [ ] Status of all containers 
+- [ ] Show configuration of container
+- [ ] Get image name for container
+- [ ] Force download image for container ?
 - [ ] Use docker-compose

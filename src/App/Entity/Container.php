@@ -10,6 +10,9 @@ class Container
     /** @var string */
     protected $name;
 
+    /** @var bool */
+    protected $interactive;
+
     /** @var string */
     protected $command;
 
@@ -27,6 +30,22 @@ class Container
     public function setName($name)
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInteractive()
+    {
+        return $this->interactive;
+    }
+
+    /**
+     * @param bool $interactive
+     */
+    public function setInteractive($interactive)
+    {
+        $this->interactive = $interactive;
     }
 
     /**

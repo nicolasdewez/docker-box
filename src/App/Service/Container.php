@@ -38,7 +38,8 @@ class Container
         $container = $this->configuration->load($name);
 
         $command = sprintf('docker run --name %s %s', $name, $container->getCommand());
-        $process = $this->buildProcess($command);
+        $process = $this->buildProcess($command, $container->isInteractive());
+
         $process->run();
 
         return $process->isSuccessful();
@@ -56,7 +57,7 @@ class Container
         }
 
         $command = sprintf('docker start %s', $name);
-        $process = $this->buildProcess($command);
+        $process = $this->buildProcess($command, true);
         $process->run();
 
         return $process->isSuccessful();
@@ -146,13 +147,18 @@ class Container
 
     /**
      * @param string $command
+     * @param bool   $interactive
      *
      * @return Process
      */
-    protected function buildProcess($command)
+    protected function buildProcess($command, $interactive = false)
     {
         $process = new Process($command);
         $process->setTimeout(null);
+
+        if ($interactive && !defined('PHP_WINDOWS_VERSION_BUILD') && php_sapi_name() === 'cli') {
+            $process->setTty(true);
+        }
 
         return $process;
     }
