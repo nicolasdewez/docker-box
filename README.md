@@ -83,5 +83,5 @@ Field can be :
 
 # TODO
 
-[ ] Status of all containers 
-[ ] Use docker-compose
+- [ ] Status of all containers 
+- [ ] Use docker-compose
