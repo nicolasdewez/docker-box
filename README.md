@@ -25,10 +25,10 @@ With this application, container can't be started more times.
 
 For add a container, execute the following command :
 ```bash
-    $ src/app.php container:add
+    $ src/app.php container:add name
 ```
 
-Application ask you name for container and command to create (without `docker run` and option `--name`).
+Application ask you command to create the container (without `docker run` and option `--name`).
 Example : ``-d -p 1080:80 jderusse/mailcatcher``
 
 
@@ -79,3 +79,9 @@ Field can be :
 * ports
 * mac
 * all (default)
+
+
+# TODO
+
+[ ] Status of all containers 
+[ ] Use docker-compose

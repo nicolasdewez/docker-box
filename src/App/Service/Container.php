@@ -151,6 +151,9 @@ class Container
      */
     protected function buildProcess($command)
     {
-        return new Process($command);
+        $process = new Process($command);
+        $process->setTimeout(null);
+
+        return $process;
     }
 }

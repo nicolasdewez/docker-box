@@ -38,16 +38,12 @@ class AddContainerCommand extends ContainerCommand
         $interactive = $this->container->get('app.interactive');
         $helper = $this->getHelper('question');
 
-        $question = $interactive->commandAddQuestionMultiple();
-        $multiple = $helper->ask($input, $output, $question);
-
         $question = $interactive->commandAddQuestionCommand();
         $command = $helper->ask($input, $output, $question);
 
         $container = new Container();
         $container->setName($input->getArgument('name'));
         $container->setCommand($command);
-        $container->setMultiple($multiple);
 
         $configuration->save($container);
 
