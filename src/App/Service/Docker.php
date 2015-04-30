@@ -55,14 +55,14 @@ class Docker
     }
 
     /**
-     * @param string $name
+     * @param ContainerEntity $container
      *
      * @return bool
      */
-    public function start($name)
+    public function start(ContainerEntity $container)
     {
-        $command = sprintf('docker start %s', $name);
-        $process = $this->buildProcess($command, true);
+        $command = sprintf('docker start %s', $container->getName());
+        $process = $this->buildProcess($command, $container->isInteractive());
         $this->runAndAnalyzeProcess($process);
     }
 

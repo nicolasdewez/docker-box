@@ -9,8 +9,8 @@ use App\Exception\ProcessException;
  */
 class Container
 {
-    const STARTED = 'Started';
-    const STOPPED = 'Stopped';
+    const STARTED = 'started';
+    const STOPPED = 'stopped';
 
     /** @var Configuration */
     protected $configuration;
@@ -49,9 +49,11 @@ class Container
     {
         if (!$this->docker->exists($name)) {
             $this->initialize($name);
+            return;
         }
 
-        $this->docker->start($name);
+        $container = $this->configuration->load($name);
+        $this->docker->start($container);
     }
 
     /**
@@ -71,7 +73,7 @@ class Container
     /**
      * @param string $name
      *
-     * @return bool
+     * @return string
      */
     public function status($name)
     {
