@@ -32,7 +32,7 @@ class AddContainerCommand extends ContainerCommand
     {
         $configuration = $this->container->get('app.configuration');
         if ($configuration->exists($input->getArgument('name'))) {
-            throw new InvalidArgumentException('This container already exists', $this->getName());
+            throw new InvalidArgumentException('This container already exists');
         }
 
         $interactive = $this->container->get('app.interactive');

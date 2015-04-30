@@ -33,7 +33,7 @@ class InspectContainerCommand extends ContainerCommand
     {
         $name = $input->getArgument('name');
         if (!$this->container->get('app.configuration')->exists($name)) {
-            throw new InvalidArgumentException('This container doesn\'t exists', $this->getName());
+            throw new InvalidArgumentException('This container doesn\'t exists');
         }
 
         $inspect = $this->container->get('app.container')->inspect($name, $input->getArgument('field'));

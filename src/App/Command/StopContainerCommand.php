@@ -30,7 +30,7 @@ class StopContainerCommand extends ContainerCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         if (!$this->container->get('app.configuration')->exists($input->getArgument('name'))) {
-            throw new InvalidArgumentException('This container doesn\'t exists', $this->getName());
+            throw new InvalidArgumentException('This container doesn\'t exists');
         }
 
         $this->container->get('app.container')->stop($input->getArgument('name'));
