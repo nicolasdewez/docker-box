@@ -10,15 +10,17 @@ class Inspection
     const IP = 'ip';
     const MAC = 'mac';
     const PORTS = 'ports';
+    const IMAGE = 'image';
     const ALL = 'all';
 
     /**
      * @param string $inspect
+     * @param string $image
      * @param string $field
      *
      * @return array
      */
-    public function get($inspect, $field)
+    public function get($inspect, $image, $field)
     {
         $array = json_decode($inspect);
         $inspect = array_pop($array);
@@ -29,6 +31,7 @@ class Inspection
                     self::IP => $this->getIp($inspect),
                     self::MAC => $this->getMac($inspect),
                     self::PORTS => $this->getPorts($inspect),
+                    self::IMAGE => $image,
                 ];
             case self::IP:
                 return [$field => $this->getIp($inspect)];
@@ -36,6 +39,8 @@ class Inspection
                 return [$field => $this->getMac($inspect)];
             case self::PORTS:
                 return [$field => $this->getPorts($inspect)];
+            case self::IMAGE:
+                return [$field => $image];
         }
 
         return [];

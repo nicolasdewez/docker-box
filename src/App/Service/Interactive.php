@@ -73,6 +73,10 @@ class Interactive
         $nbRows = 0;
         $table = new Table($output);
         $table->setHeaders(['Key', 'Value']);
+        if (isset($inspect[Inspection::IMAGE])) {
+            $table->addRow([Inspection::IMAGE, $inspect[Inspection::IMAGE]]);
+            $nbRows++;
+        }
         if (isset($inspect[Inspection::IP])) {
             $table->addRow([Inspection::IP, $inspect[Inspection::IP]]);
             $nbRows++;

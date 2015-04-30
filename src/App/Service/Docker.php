@@ -26,10 +26,7 @@ class Docker
 
         $command = sprintf('docker ps %s |grep %s', $option, $name);
         $process = $this->buildProcess($command);
-        $process->run();
-        if (!$process->isSuccessful()) {
-            return false;
-        }
+        $this->runAndAnalyzeProcess($process);
 
         $lines = explode(PHP_EOL, $process->getOutput());
         foreach ($lines as $line) {
@@ -39,6 +36,27 @@ class Docker
         }
 
         return false;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function getImage($name)
+    {
+        $command = sprintf('docker ps -a |grep %s', $name);
+        $process = $this->buildProcess($command);
+        $this->runAndAnalyzeProcess($process);
+
+        $lines = explode(PHP_EOL, $process->getOutput());
+        foreach ($lines as $line) {
+            if (preg_match('#\w*\s*([^\s]*).*'.$name.'\s*$#', $line, $matches)) {
+                return $matches[1];
+            }
+        }
+
+        return '';
     }
 
     /**

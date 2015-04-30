@@ -49,6 +49,7 @@ class Container
     {
         if (!$this->docker->exists($name)) {
             $this->initialize($name);
+
             return;
         }
 
@@ -88,9 +89,10 @@ class Container
      */
     public function inspect($name, $field)
     {
-        $output = $this->docker->inspect($name);
+        $inspect = $this->docker->inspect($name);
+        $image = $this->docker->getImage($name);
 
-        return $this->inspection->get($output, $field);
+        return $this->inspection->get($inspect, $image, $field);
     }
 
     /**

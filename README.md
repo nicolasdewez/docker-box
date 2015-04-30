@@ -78,11 +78,12 @@ Field can be :
 * ip
 * ports
 * mac
+* image
 * all (default)
 
 
 # TODO
 
-- [ ] Get image name for container
 - [ ] Force download image for container ?
 - [ ] Use docker-compose
+- [ ] Unit tests
