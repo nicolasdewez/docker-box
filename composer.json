@@ -1,23 +1,19 @@
 {
-    "name": "nicolasdewez/doker-box",
+    "name": "nicolasdewez/docker-box",
     "license": "MIT",
     "type": "project",
-    "description": "Symfony application to manage local docker container",
+    "description": "Symfony application to manage local docker containers",
     "autoload": {
         "psr-0": { "App\\": "src/", "SymfonyStandard": "app/" }
     },
     "require": {
-        "nicolasdewez/application-console-bundle": "~1.0",
-        "symfony/finder": "~2.0",
-        "symfony/process": "~2.0",
-        "symfony/serializer": "~2.0"
+        "nicolasdewez/application-console-bundle": "~1.1",
+        "symfony/finder": "~2.1|~3.0.0",
+        "symfony/process": "~2.1|~3.0.0",
+        "symfony/serializer": "~2.1|~3.0.0"
     },
     "config": {
         "bin-dir": "bin"
     },
-    "extra": {
-        "branch-alias": {
-          "dev-master": "2.0.x-dev"
-        }
-    }
+    "minimum-stability": "dev"
 }

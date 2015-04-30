@@ -33,10 +33,7 @@ class StartContainerCommand extends ContainerCommand
             throw new InvalidArgumentException('This container doesn\'t exists', $this->getName());
         }
 
-        if ($this->container->get('app.container')->start($input->getArgument('name'))) {
-            $output->writeln('<info>Container started</info>');
-        } else {
-            $output->writeln('<error>A problem is occured</error>');
-        }
+        $this->container->get('app.container')->start($input->getArgument('name'));
+        $output->writeln('<info>Container started</info>');
     }
 }

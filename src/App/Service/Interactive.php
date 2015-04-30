@@ -2,8 +2,10 @@
 
 namespace App\Service;
 
+use App\Entity\Container as ContainerEntity;
 use App\Exception\BadResponseException;
 use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
@@ -68,19 +70,44 @@ class Interactive
      */
     public function commandInspectTable(OutputInterface $output, array $inspect)
     {
+        $nbRows = 0;
         $table = new Table($output);
         $table->setHeaders(['Key', 'Value']);
         if (isset($inspect[Inspection::IP])) {
             $table->addRow([Inspection::IP, $inspect[Inspection::IP]]);
+            $nbRows++;
         }
         if (isset($inspect[Inspection::MAC])) {
             $table->addRow([Inspection::MAC, $inspect[Inspection::MAC]]);
+            $nbRows++;
         }
         if (isset($inspect[Inspection::PORTS])) {
             foreach ($inspect[Inspection::PORTS] as $port) {
+                $nbRows++;
                 $table->addRow([Inspection::PORTS, $port]);
             }
         }
+
+        if (0 === $nbRows) {
+            $table->addRow([new TableCell('No data', ['colspan' => 2])]);
+        }
+
+        return $table;
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param ContainerEntity $container
+     *
+     * @return Table
+     */
+    public function commandConfigTable(OutputInterface $output, ContainerEntity $container)
+    {
+        $table = new Table($output);
+        $table->setHeaders(['Key', 'Value']);
+
+        $table->addRow(['Interactive', $container->isInteractive() ? 'Yes' : 'No']);
+        $table->addRow(['Command', $container->getCommand()]);
 
         return $table;
     }

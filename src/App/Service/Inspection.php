@@ -43,24 +43,12 @@ class Inspection
 
     /**
      * @param \StdClass $inspect
-     */
-    public function getNetworkSettings(\StdClass $inspect)
-    {
-        if (!isset($inspect->NetworkSettings)) {
-            return;
-        }
-
-        return $inspect->NetworkSettings->IPAddress;
-    }
-
-    /**
-     * @param \StdClass $inspect
      *
      * @return string
      */
     public function getIp(\StdClass $inspect)
     {
-        if (!isset($inspect->NetworkSettings)) {
+        if (!isset($inspect->NetworkSettings) || empty($inspect->NetworkSettings->IPAddress)) {
             return;
         }
 
@@ -74,7 +62,7 @@ class Inspection
      */
     public function getMac(\StdClass $inspect)
     {
-        if (!isset($inspect->NetworkSettings)) {
+        if (!isset($inspect->NetworkSettings) || empty($inspect->NetworkSettings->MacAddress)) {
             return;
         }
 
@@ -88,8 +76,8 @@ class Inspection
      */
     public function getPorts(\StdClass $inspect)
     {
-        if (!isset($inspect->NetworkSettings)) {
-            return;
+        if (!isset($inspect->NetworkSettings) || !isset($inspect->NetworkSettings->Ports)) {
+            return [];
         }
 
         $ports = [];

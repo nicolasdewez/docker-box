@@ -9,17 +9,17 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class StatusContainerCommand.
+ * Class ConfigurationContainerCommand.
  */
-class StatusContainerCommand extends ContainerCommand
+class ConfigurationContainerCommand extends ContainerCommand
 {
     /**
      * {@inheritdoc}
      */
     public function configure()
     {
-        $this->setName('container:status')
-            ->setDescription('Status of container')
+        $this->setName('container:config')
+            ->setDescription('Configuration of container')
             ->addArgument('name', InputArgument::OPTIONAL, 'Name of container', Configuration::ALL)
         ;
     }
@@ -29,14 +29,13 @@ class StatusContainerCommand extends ContainerCommand
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $containerSrv = $this->container->get('app.container');
-
+        $interactive = $this->container->get('app.interactive');
         $containers = $this->container->get('app.configuration')->loadInArray($input->getArgument('name'));
         foreach ($containers as $container) {
-            $status = $containerSrv->status($container->getName());
-
-            $display = sprintf('<info>Container %s is %s</info>', $container->getName(), $status);
-            $output->writeln($display);
+            $output->writeln(sprintf('<info>Container %s</info>', $container->getName()));
+            $table = $interactive->commandConfigTable($output, $container);
+            $table->render();
+            $output->writeln('');
         }
     }
 }

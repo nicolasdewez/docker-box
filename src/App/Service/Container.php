@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use Symfony\Component\Process\Process;
+use App\Exception\ProcessException;
 
 /**
  * Class Container.
@@ -18,93 +18,54 @@ class Container
     /** @var Inspection */
     protected $inspection;
 
+    /** @var Docker */
+    protected $docker;
+
     /**
      * @param Configuration $configuration
      * @param Inspection    $inspection
+     * @param Docker        $docker
      */
-    public function __construct(Configuration $configuration, Inspection $inspection)
+    public function __construct(Configuration $configuration, Inspection $inspection, Docker $docker)
     {
         $this->configuration = $configuration;
         $this->inspection = $inspection;
+        $this->docker = $docker;
     }
 
     /**
      * @param string $name
-     *
-     * @return bool
      */
     public function initialize($name)
     {
         $container = $this->configuration->load($name);
-
-        $command = sprintf('docker run --name %s %s', $name, $container->getCommand());
-        $process = $this->buildProcess($command, $container->isInteractive());
-
-        $process->run();
-
-        return $process->isSuccessful();
+        $this->docker->initialize($container);
     }
 
     /**
      * @param string $name
-     *
-     * @return bool
      */
     public function start($name)
     {
-        if (!$this->exists($name)) {
-            return $this->initialize($name);
+        if (!$this->docker->exists($name)) {
+            $this->initialize($name);
         }
 
-        $command = sprintf('docker start %s', $name);
-        $process = $this->buildProcess($command, true);
-        $process->run();
-
-        return $process->isSuccessful();
+        $this->docker->start($name);
     }
 
     /**
      * @param string $name
      *
-     * @return bool
+     * @throws ProcessException
      */
     public function stop($name)
     {
-        $command = sprintf('docker stop %s', $name);
-        $process = $this->buildProcess($command);
-        $process->run();
-
-        return $process->isSuccessful();
-    }
-
-    /**
-     * @param string $name
-     * @param bool   $launched
-     *
-     * @return bool
-     */
-    public function exists($name, $launched = false)
-    {
-        $option = '-a';
-        if (true === $launched) {
-            $option = '';
+        if (!$this->docker->exists($name, true)) {
+            throw new ProcessException('Container is already stop');
         }
 
-        $command = sprintf('docker ps %s |grep %s', $option, $name);
-        $process = $this->buildProcess($command);
-        $process->run();
-        if (!$process->isSuccessful()) {
-            return false;
-        }
-
-        $lines = explode(PHP_EOL, $process->getOutput());
-        foreach ($lines as $line) {
-            if (preg_match('#'.$name.'\s*$#', $line)) {
-                return true;
-            }
-        }
-
-        return false;
+        $this->docker->stop($name);
     }
 
     /**
@@ -114,7 +75,7 @@ class Container
      */
     public function status($name)
     {
-        return $this->exists($name, true) ? self::STARTED : self::STOPPED;
+        return $this->docker->exists($name, true) ? self::STARTED : self::STOPPED;
     }
 
     /**
@@ -125,41 +86,24 @@ class Container
      */
     public function inspect($name, $field)
     {
-        $command = sprintf('docker inspect %s', $name);
-        $process = $this->buildProcess($command);
-        $process->run();
-        if (!$process->isSuccessful()) {
-            return [];
-        }
+        $output = $this->docker->inspect($name);
 
-        return $this->inspection->get($process->getOutput(), $field);
+        return $this->inspection->get($output, $field);
     }
 
     /**
      * @param string $name
-     *
-     * @return bool
      */
     public function delete($name)
     {
-        return $this->stop($name) && $this->configuration->delete($name);
-    }
-
-    /**
-     * @param string $command
-     * @param bool   $interactive
-     *
-     * @return Process
-     */
-    protected function buildProcess($command, $interactive = false)
-    {
-        $process = new Process($command);
-        $process->setTimeout(null);
-
-        if ($interactive && !defined('PHP_WINDOWS_VERSION_BUILD') && php_sapi_name() === 'cli') {
-            $process->setTty(true);
+        if ($this->docker->exists($name, true)) {
+            $this->docker->stop($name);
         }
 
-        return $process;
+        if ($this->docker->exists($name)) {
+            $this->docker->delete($name);
+        }
+
+        $this->configuration->delete($name);
     }
 }

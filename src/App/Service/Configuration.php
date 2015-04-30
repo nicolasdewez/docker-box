@@ -14,6 +14,8 @@ use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
  */
 class Configuration
 {
+    const ALL = '[all]';
+
     /** @var Serializer */
     protected $serializer;
 
@@ -83,6 +85,26 @@ class Configuration
         }
 
         return $containers;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return array
+     *
+     * @throws InvalidArgumentException
+     */
+    public function loadInArray($name)
+    {
+        if (Configuration::ALL !== $name) {
+            if (!$this->exists($name)) {
+                throw new InvalidArgumentException('This container doesn\'t exists');
+            }
+
+            return [$name => $this->load($name)];
+        }
+
+        return $this->lists();
     }
 
     /**

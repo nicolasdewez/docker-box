@@ -11,6 +11,10 @@
                 <service class="App\Service\Inspection">
                 </service>
             </argument>
+            <argument type="service">
+                <service class="App\Service\Docker">
+                </service>
+            </argument>
         </service>
 
         <service id="app.interactive" class="App\Service\Interactive">
