@@ -62,9 +62,9 @@ For stop a container, execute the following command :
 
 ## Status container
 
-For get status of container, execute the following command :
+For get status of container(s), execute the following command :
 ```bash
-    $ src/app.php container:status name
+    $ src/app.php container:status [name]
 ```
 
 ## Inspect container
@@ -74,12 +74,20 @@ For inspect a container, execute the following command :
     $ src/app.php container:inspect name [field]
 ```
 
-Field can be :
+Argument `field` can be :
 * ip
 * ports
 * mac
 * image
 * all (default)
+
+
+## View configuration container
+
+For view the configuration, execute the following command :
+```bash
+    $ src/app.php container:config [name]
+```
 
 
 # TODO
